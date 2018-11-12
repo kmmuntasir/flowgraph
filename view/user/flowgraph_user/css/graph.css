@@ -1,0 +1,87 @@
+body {
+	margin: 0;
+	padding: 0;
+	clear: both;
+}
+
+.clear {
+	height: 0;
+	width: 0;
+	clear: both;
+}
+
+#main_container {
+	width: 100%;
+	/*overflow: hidden;*/
+	display: flex;
+}
+
+#graph_container {
+	width: 60%;
+	float: left;
+	display: flex;
+	justify-content: space-between;
+}
+
+#curtain_1, #curtain_2 {
+	position: absolute;
+	display : flex;
+	align-items : center;
+    z-index: 1000;
+}
+
+#curtain_1 {
+	width: 199px;
+    height: 70px;
+    background: whitesmoke;
+    /*background: rgba(190, 190, 190, 0.5);*/
+    margin-top: 2px;
+    margin-left: 2px;
+    border-bottom: solid 1px #000;
+}
+
+#curtain_2 {
+	width: 180px;
+    height: 75px;
+    background: whitesmoke;
+    /*background: rgba(190, 190, 190, 0.5);*/
+    margin-top: 1px;
+    margin-left: 206px;
+}
+
+#curtain_1 p, #curtain_2 p {
+	width: 100%;
+	text-align: center;
+}
+
+#curtain_1 p {
+	font-weight: bold;
+	font-size: 25px;
+}
+
+#myPaletteDiv {
+	width: 200px;
+	margin-right: 2px;
+	background-color: whitesmoke;
+	border: solid 1px black;
+}
+
+#myDiagramDiv {
+	flex-grow: 1;
+	/*min-height: 500px;*/
+	height: calc(100vh - 120px);
+	border: solid 1px black;
+}
+
+#model_container {
+	width: 39.5%;
+	padding-left: 2px;
+	float: left;
+	height: calc(100vh - 300px);
+}
+
+#mySavedModel {
+	width:100%;
+	height: calc(100vh - 390px);
+	border: solid 1px #000;
+}

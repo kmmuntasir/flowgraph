@@ -1,0 +1,51 @@
+
+/* ---------------------------------------------------
+    MEDIAQUERIES (Mobile)
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -130px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    }
+    #content {
+        width: 100%;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+
+    #foot_icons a {
+        font-size: 1.3em !important;
+    }
+}
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES (Desktop)
+----------------------------------------------------- */
+
+@media (min-width: 769px) {
+    #sidebar {
+        margin-left: 0px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content, #content.active {
+        width: calc(100% - 130px);
+        margin-left: 130px;
+    }
+    #sidebarCollapse, .sidebar-header, .overlay {
+        display: none !important;
+    }
+    .navbar {
+        padding: 0;
+    }
+    .navbar .navbar-nav li .dropdown-menu {
+        margin-left: -90px;
+    }
+}
