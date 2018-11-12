@@ -1,7 +1,17 @@
 $(document).ready(function() {
-	var url = "http://localhost/flowgraph/index.php/home/graph_json";
+	var url = $('#fetch_graph_url').val();
 	$.post(url, function(data) {
 		$('#mySavedModel').val(data);
 		init();
 	});
+});
+
+$(document).on('click', '#SaveButton', function(){ 
+	save_graph();
+});
+$(document).on('click', '#LoadButton', function(){ 
+	load_graph();
+});
+$(document).on('click', '.go_print_btn', function(){ 
+	printDiagram();
 });

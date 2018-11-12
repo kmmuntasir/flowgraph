@@ -26,7 +26,7 @@
 }
 
 body {
-    background: #fafafa;
+    /*background: #fafafa;*/
 }
 
 p {
@@ -38,20 +38,15 @@ p {
 }
 
 .navbar {
-    padding: 15px 10px;
-    background: #fff;
+    /*padding: 15px 10px;*/
+    /*background: #fff;*/
     border: none;
     border-radius: 0;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
 }
 
-.navbar .navbar-nav li .dropdown-menu {
-    font-size: 0.8em;
-}
 
 #main_nav_link > ul > li > a {
-    font-size: 0.8em;
-    padding: 5px;
     color:#000;
     text-shadow: 1px 1px 0px #fff;
 }
@@ -59,160 +54,16 @@ p {
 .navbar-brand {
     padding:0;
 }
-#navbar_isp_name {
-    font-size: 1rem;
-}
 
 #navbar_logo {
     width: 20px;
 }
-.navbar-btn {
-    box-shadow: none;
-    outline: none !important;
-    border: none;
-}
-
-.wrapper {
-    width: 100%;
-}
-
-/* ---------------------------------------------------
-    SIDEBAR STYLE
------------------------------------------------------ */
 
 
-#sidebar {
-    width: 130px;
-    position: fixed;
-    left: 0;
-    height: 100vh;
-    z-index: 999;
-    background: #eee;
-    color: #000;
-    text-shadow: 1px 1px 0px #fff;
-    transition: all ease 300ms;
-    overflow-y: scroll;
-}
-
-#sidebar.active {
-    left: 0;
-}
-
-#sidebar a, #sidebar a:hover, #sidebar a:focus {
-    color: inherit;
-    text-decoration: none;
-    transition: none;
-}
-
-#sidebar ul.components {
-    /*border-bottom: 1px solid #ccc;*/
-}
-
-#sidebar_main_links {
-    padding-bottom: 100px;
-}
-
-#sidebar ul.components li:last-child {
-    margin-bottom: 10px;
-}
-
-#sidebar .sidebar-link-icon {
-    display: block;
-    float: left;
-    width: 20px;
-}
-
-#sidebar ul p {
-    color: #fff;
-    padding: 10px;
-}
-
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 0.8em;
-    display: block;
-    transition: none;
-    border-bottom: solid 1px #ddd;
-}
-
-#sidebar ul li.active>a, #sidebar ul li>a[aria-expanded="true"], #sidebar ul li a:hover {
-    color: #fff;
-    background: #343a40;
-    text-shadow: 1px 1px 0px #000;
-}
-
-#sidebar a[data-toggle="collapse"] {
-    position: relative;
-}
-
-#sidebar .dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-
-.overlay {
-    display: none;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-    opacity: 0;
-    transition: all 0.5s ease-in-out;
-}
-
-.overlay.active {
-    display: block;
-    opacity: 1;
-}
-
-ul ul a {
-    padding-left: 2em !important;
-}
 
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
-
-#content {
-    width: 100%;
-    padding: 0px;
-    min-height: 100vh;
-    transition: all 0.3s;
-    top: 0;
-    right: 0;
-}
-
-/* ---------------------------------------------------
-    foot_icons style
------------------------------------------------------*/
-
-#foot_icons {
-    background: #343a40;
-    color: #eee;
-    text-shadow: 1px 1px 0px #000;
-    bottom: 0;
-    position: fixed;
-    width: 130px;
-}
-
-#foot_icons a {
-    width: 30px;
-    float: left;
-    text-align: center;
-    transition: none;
-    font-size: 1em !important;
-}
-
-
-#foot_icons a:hover {
-    background-color: #f8f9fa;
-    color: #343a40;
-    text-shadow: 1px 1px 0px #fff;
-}
 
 
 /* ---------------------------------------------------
@@ -220,14 +71,9 @@ ul ul a {
 ----------------------------------------------------- */
 
 .card-header {
-    padding: 6px 10px;
     text-transform: capitalize;
     display: flex;
     font-size: 1.15rem;
-}
-
-.card-body {
-    padding: 6px 10px 20px 10px;
 }
 
 .card-header-btn-bar {
@@ -243,19 +89,8 @@ ul ul a {
     Bootstrap Modification Styles
 ----------------------------------------------------- */
 
-/*.btn-sm {
-    padding: 0.08rem 0.4rem;
-    font-size: 0.75rem;
-    line-height: 1;
-    border-radius: 0;
-}*/
 
-.dropdown-menu {
-    padding: 4px 0px;
-}
 .dropdown-item {
-    padding: 0.15rem 0.65rem;
-    font-size: 0.9rem;
     cursor: pointer;
 }
 
@@ -268,9 +103,6 @@ ul ul a {
     Datatables Styles
 ----------------------------------------------------- */
 
-.table-responsive, .table-responsive * {
-    font-size: 0.8rem;
-}
 
 .dt_xs {width: 50px; max-width: 50px;}
 .dt_sm {width: 100px; max-width: 100px;}
@@ -287,7 +119,7 @@ ul ul a {
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.09);
-    z-index: 1;
+    z-index: 1000;
 }
 
 /*#overlay_loader, #overlay_loader * {
@@ -306,68 +138,9 @@ ul ul a {
   float:right;
 }
 #loader_content .loader_text {
-  font-size: 1.5rem;
   display: none;
   font-size: 1rem;
   margin-bottom: 0;
   max-width: 768px;
 }
 
-
-/* ---------------------------------------------------
-    MEDIAQUERIES (Mobile)
------------------------------------------------------ */
-
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -130px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-    }
-    #content {
-        width: 100%;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
-
-    #foot_icons a {
-        font-size: 1.3em !important;
-    }
-    .mobile_margin {
-        margin-left: -150px;
-    }
-}
-
-
-/* ---------------------------------------------------
-    MEDIAQUERIES (Desktop)
------------------------------------------------------ */
-
-@media (min-width: 769px) {
-    #sidebar {
-        margin-left: 0px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #content, #content.active {
-        width: calc(100% - 130px);
-        margin-left: 130px;
-    }
-    #sidebarCollapse, .sidebar-header, .overlay {
-        display: none !important;
-    }
-    .navbar {
-        padding: 0;
-    }
-    .navbar .navbar-nav li .dropdown-menu {
-        margin-left: -90px;
-    }
-
-    .dropdown-menu {
-        margin-left: -150px;
-    }
-}

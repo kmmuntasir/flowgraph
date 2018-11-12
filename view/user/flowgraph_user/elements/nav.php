@@ -1,14 +1,9 @@
 <nav id="main_nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container-fluid">
 
-        <button type="button" id="sidebarCollapse" class="btn btn-info">
-            <i class="fas fa-align-justify"></i>
-            <span>Toggle Sidebar</span>
-        </button>
-
-        <a class="navbar-brand" href="#">
-            <img id="navbar_logo" class="omni_logo ml-3" src="<?php echo $fullpath; ?>img/logo.png" alt="School Logo">
-            <span id="navbar_isp_name" class="">School<span>
+        <a class="navbar-brand" href="<?php echo base_url(); ?>">
+            <img id="navbar_logo" class="omni_logo ml-3" src="<?php echo base_url('img/logo.png'); ?>" alt="School Logo">
+            <span id="brand_name" class="">FlowGraph<span>
         </a>
 
         <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#main_nav_link" aria-controls="main_nav_link" aria-expanded="false" aria-label="Toggle navigation">

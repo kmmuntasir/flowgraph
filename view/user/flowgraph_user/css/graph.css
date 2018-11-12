@@ -1,87 +1,83 @@
-body {
-	margin: 0;
-	padding: 0;
-	clear: both;
-}
 
-.clear {
-	height: 0;
-	width: 0;
-	clear: both;
-}
-
-#main_container {
+#go_container {
 	width: 100%;
-	/*overflow: hidden;*/
-	display: flex;
 }
 
 #graph_container {
-	width: 60%;
-	float: left;
+	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	border: solid 1px #000;
 }
 
 #curtain_1, #curtain_2 {
 	position: absolute;
 	display : flex;
 	align-items : center;
-    z-index: 1000;
+    z-index: 50;
 }
 
 #curtain_1 {
-	width: 199px;
+	width: 202px;
     height: 70px;
     background: whitesmoke;
     /*background: rgba(190, 190, 190, 0.5);*/
     margin-top: 2px;
-    margin-left: 2px;
     border-bottom: solid 1px #000;
 }
 
 #curtain_2 {
-	width: 180px;
-    height: 75px;
+	width: 175px;
+    height: 72px;
     background: whitesmoke;
     /*background: rgba(190, 190, 190, 0.5);*/
-    margin-top: 1px;
-    margin-left: 206px;
+    margin-left: 202px;
+    border: solid 1px #000;
+    border-top: none;
 }
 
 #curtain_1 p, #curtain_2 p {
 	width: 100%;
 	text-align: center;
+	font-weight: bold;
+	color: #333;
 }
 
 #curtain_1 p {
 	font-weight: bold;
-	font-size: 25px;
+	font-size: 1.5rem;
+	padding-top: 0.6em;
+	text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+}
+
+#curtain_2 p {
+	padding-top: 1em;
 }
 
 #myPaletteDiv {
 	width: 200px;
 	margin-right: 2px;
 	background-color: whitesmoke;
-	border: solid 1px black;
 }
 
 #myDiagramDiv {
 	flex-grow: 1;
-	/*min-height: 500px;*/
-	height: calc(100vh - 120px);
-	border: solid 1px black;
+	min-height: 520px;
+	border-left: solid 1px #000;
 }
 
 #model_container {
-	width: 39.5%;
-	padding-left: 2px;
-	float: left;
-	height: calc(100vh - 300px);
+	width:100%;
+}
+
+.graph_buttons_container {
+	max-width: 400px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
 }
 
 #mySavedModel {
 	width:100%;
-	height: calc(100vh - 390px);
+	height: 200px;
 	border: solid 1px #000;
 }

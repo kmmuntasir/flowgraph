@@ -4,14 +4,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title><?php echo $page_title; ?></title>
-    <link rel="icon" href="<?php echo base_url('img'); ?>/favicon.png">
+    <link rel="icon" href="<?php echo base_url('img/favicon.png'); ?>">
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="<?php echo $fullpath; ?>assets/bootstrap/4.1.3/css/bootstrap.min.css">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/style.css">
+    <link rel="stylesheet" href="<?php echo $fullpath; ?>css/media_queries.css">
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/custom.css">
+
+    <?php if(isset($graph)) { ?>
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/graph.css">
+    <?php } ?>
+
     <?php if($page == 'login') { ?>
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/login.css">
     <?php } ?>

@@ -4,23 +4,7 @@
 ----------------------------------------------------- */
 
 @media (max-width: 768px) {
-    #sidebar {
-        margin-left: -130px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-    }
-    #content {
-        width: 100%;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
 
-    #foot_icons a {
-        font-size: 1.3em !important;
-    }
 }
 
 
@@ -29,23 +13,52 @@
 ----------------------------------------------------- */
 
 @media (min-width: 769px) {
-    #sidebar {
-        margin-left: 0px;
+    .navbar .navbar-nav li .dropdown-menu {
+        margin-left: -90px;
     }
-    #sidebar.active {
-        margin-left: 0;
+
+    .dropdown-menu {
+        margin-left: -150px;
     }
-    #content, #content.active {
-        width: calc(100% - 130px);
-        margin-left: 130px;
-    }
-    #sidebarCollapse, .sidebar-header, .overlay {
-        display: none !important;
-    }
+}
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES (Regular Widescreen)
+----------------------------------------------------- */
+
+@media (max-width: 1366px) {
     .navbar {
         padding: 0;
     }
     .navbar .navbar-nav li .dropdown-menu {
-        margin-left: -90px;
+        font-size: 0.8em;
+    }
+    #main_nav_link > ul > li > a {
+        font-size: 0.8em;
+        padding: 5px;
+    }
+    #brand_name {
+        font-size: 1rem;
+    }
+
+    .card-header {
+        padding: 6px 10px;
+    }
+
+    .card-body {
+        padding: 6px 10px 20px 10px;
+    }
+
+    .dropdown-menu {
+        padding: 4px 0px;
+    }
+    .dropdown-item {
+        padding: 0.15rem 0.65rem;
+        font-size: 0.9rem;
+    }
+    
+    .table-responsive, .table-responsive * {
+        font-size: 0.8rem;
     }
 }

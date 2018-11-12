@@ -181,7 +181,7 @@ function init() {
           )
         );
 
-    load();  // load an initial diagram from some JSON text
+    load_graph();  // load an initial diagram from some JSON text
 
     // initialize the Palette that is on the left side of the page
     myPalette =
@@ -218,12 +218,13 @@ function init() {
               ),
           model: new go.GraphLinksModel([  // specify the contents of the Palette
             { text: "--------------\n\n", figure: "Rectangle", fill: "rgba(0,0,0,0.0)" },
-            { text: "Start", figure: "Circle", fill: "#00AD5F" },
-            { text: "Step" },
-            { text: "Input/Output", figure: "Parallelogram1", fill: "lightyellow" },
+            { text: "Start", figure: "Circle", fill: "#00AD5F", type: "start" },
+            { text: "Step", figure: "Rectangle", fill: "whitesmoke", type: "step"},
+            { text: "Input/Output", figure: "Parallelogram1", fill: "orange", type: "io"},
             // { text: "DB", figure: "Database", fill: "lightgray" },
-            { text: "Condition", figure: "Diamond", fill: "lightskyblue" },
-            { text: "End", figure: "Circle", fill: "#CE0620" }
+            { text: "Condition", figure: "Diamond", fill: "lightskyblue", type: "condition"},
+            { text: "Comment", figure: "Rectangle", fill: "lightyellow", type: "comment"},
+            { text: "End", figure: "Circle", fill: "#CE0620", type: "end"}
             ], [
             // the Palette also has a disconnected Link, which the user can drag-and-drop
             { points: new go.List(go.Point).addAll([new go.Point(0, 0), new go.Point(30, 0), new go.Point(30, 40), new go.Point(60, 40)]) }
@@ -254,12 +255,12 @@ function init() {
 
 
   // Show the diagram's model in JSON format that the user may edit
-  function save() {
+  function save_graph() {
     saveDiagramProperties();  // do this first, before writing to JSON
     document.getElementById("mySavedModel").value = myDiagram.model.toJson();
     myDiagram.isModified = false;
   }
-  function load() {
+  function load_graph() {
     myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     loadDiagramProperties();  // do this after the Model.modelData has been brought into memory
   }
@@ -272,4 +273,25 @@ function init() {
     var pos = myDiagram.model.modelData.position;
     if (pos) myDiagram.initialPosition = go.Point.parse(pos);
     $('#curtain_2 p').html('Loading Complete');
+  }
+
+  
+  // print the diagram by opening a new window holding SVG images of the diagram contents for each page
+  function printDiagram() {
+    var svgWindow = window.open();
+    if (!svgWindow) return;  // failure to open a new Window
+    var printSize = new go.Size(700, 960);
+    var bnds = myDiagram.documentBounds;
+    var x = bnds.x;
+    var y = bnds.y;
+    while (y < bnds.bottom) {
+      while (x < bnds.right) {
+        var svg = myDiagram.makeSVG({ scale: 1.0, position: new go.Point(x, y), size: printSize });
+        svgWindow.document.body.appendChild(svg);
+        x += printSize.width;
+      }
+      x = bnds.x;
+      y += printSize.height;
+    }
+    setTimeout(function() { svgWindow.print(); }, 1);
   }

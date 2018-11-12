@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Fl_Controller extends CI_Controller {
+class Base_Controller extends CI_Controller {
 
 	public $data = array();
     public $viewpath = '';
@@ -321,10 +321,10 @@ class Fl_Controller extends CI_Controller {
 
 // ============================== Admin Controller =============================== //
 
-class Admin_Controller extends Fl_Controller {
+class Admin_Controller extends Base_Controller {
 
     public $module = 'admin';   // defines the module
-    public $template = 'optima_Fl_admin';  // Current Template Name
+    public $template = 'optima_Base_admin';  // Current Template Name
 
     function __construct($bypass_login_check=false) {
         parent::__construct();
@@ -349,7 +349,7 @@ class Admin_Controller extends Fl_Controller {
 
 // ============================== Student Controller =============================== //
 
-class User_Controller extends Fl_Controller {
+class User_Controller extends Base_Controller {
 
     public $module = 'user';   // defines the module
     public $template = 'flowgraph_user';  // Current Template Name
@@ -360,6 +360,7 @@ class User_Controller extends Fl_Controller {
 
         // Loading Models
         // $this->load->model($this->module."/m_user"); 
+        $this->load->model($this->module."/m_".$this->router->fetch_class());
 
     }
 }
