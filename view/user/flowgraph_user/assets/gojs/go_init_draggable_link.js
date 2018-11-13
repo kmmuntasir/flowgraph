@@ -295,3 +295,16 @@ function init() {
     }
     setTimeout(function() { svgWindow.print(); }, 1);
   }
+
+  function createThumbnail() {
+    var img = myDiagram.makeImage({
+      scale: 1,
+      size: new go.Size(500, NaN),
+      background: "white",
+      details: 0.4,
+      type: "image/jpeg"
+    });
+    $('body').append(img);
+    // var src = $(img).attr('src');
+    // console.log(src);
+  }

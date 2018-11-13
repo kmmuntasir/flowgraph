@@ -12,9 +12,14 @@
 
         <div class="collapse navbar-collapse" id="main_nav_link">
             <ul class="navbar-nav ml-auto">
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Reminder Dropdown</a>
+                    <a class="nav-link" href="<?php echo site_url($module."/home"); ?>">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo site_url($module."/home/browse"); ?>">Browse Flowcharts</a>
+                </li>
+                <?php if(isset($this->session->user_id)) { ?>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Message Dropdown</a>
                 </li>
@@ -29,6 +34,30 @@
                         <a class="dropdown-item" href="<?php echo site_url($module.'/login/logout'); ?>">Logout</a>
                     </div>
                 </li>
+                <?php } else { ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="loginDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </a>
+                    <div id="loginDropdownmenu" class="dropdown-menu" aria-labelledby="loginDropdown">
+                        <form class="form-control" action="<?php echo site_url(); ?>" method="post">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="text" name="user_email" placeholder="Your Email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="user_pass" placeholder="Password" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary float-right">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                            <div class=""></div>
+                            <br><br><a class="float-right" href="#">New User? Register Here</a>
+                        </form>
+                    </div>
+                </li>
+                <?php } ?>
             </ul>
         </div>
     </div>

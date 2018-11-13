@@ -2,6 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home extends User_Controller {
+
+	public $thumb_dir = "img/thumbs/";
 	
 	function __construct() {
 	    parent::__construct(true);
@@ -13,17 +15,51 @@ class Home extends User_Controller {
 	}
 
 	function index() {
-		// $data = $this->data;
-		// $data['page'] = $this->router->fetch_class();
-		// $data['page_title'] = ucfirst($this->router->fetch_class());
-		// $data['graph'] = true;
-		// $data['graph_id'] = NULL;
+		$data = $this->data;
+		$data['page'] = $this->router->fetch_class();
+		$data['page_title'] = ucfirst($this->router->fetch_class());
+		$data['graph'] = true;
+		$data['graph_id'] = NULL;
 		// $this->printer($data, true);
-		// $this->load->view($this->viewpath.'v_main', $data);
-
-		redirect($this->data['controller']);
+		$this->load->view($this->viewpath.'v_main', $data);
 	}
-/*
+
+	function browse() {
+		$data = $this->data;
+		$data['page'] = $this->router->fetch_method();
+		$data['page_title'] = ucfirst($this->router->fetch_method());
+		$data['thumb_dir'] = $this->thumb_dir;
+		$data['all_graphs'] = $this->m_home->fetch_all_graphs();
+		// $this->printer($data, true);
+		$this->load->view($this->viewpath.'v_main', $data);
+	}
+
+	function store_image($data, $type) {
+		if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
+		    $data = substr($data, strpos($data, ',') + 1);
+		    $type = strtolower($type[1]); // jpg, png, gif
+
+		    if (!in_array($type, [ 'jpg', 'jpeg', 'gif', 'png' ])) {
+		        throw new \Exception('invalid image type');
+		    }
+
+		    $data = base64_decode($data);
+
+		    if ($data === false) {
+		        throw new \Exception('base64_decode failed');
+		    }
+		} else {
+		    throw new \Exception('did not match data URI with image data');
+		}
+
+		do {
+			// Generating a unique name using current microtime
+			$file_path = $this->thumb_dir.substr(md5(microtime(true)), 1, 10).$type;
+		} while(is_file($file_path));
+
+		file_put_contents($file_path, $data);
+	}
+
 	function viewgraph($graph_id=NULL) {
 		$data = $this->data;
 		$data['page'] = $this->router->fetch_method();
@@ -60,5 +96,4 @@ class Home extends User_Controller {
 
 		}
 	}
-	*/
 }

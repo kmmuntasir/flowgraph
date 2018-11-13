@@ -20,6 +20,10 @@
 				<i class="fas fa-print"></i>
 				Print
 			</button>
+			<button class="go_thumb_btn btn btn-warning btn-lg">
+				<i class="fas fa-image"></i>
+				Thumb
+			</button>
 		</div>
 
 		<div style="display: block">

@@ -15,3 +15,8 @@ $(document).on('click', '#LoadButton', function(){
 $(document).on('click', '.go_print_btn', function(){ 
 	printDiagram();
 });
+
+
+$(document).on('click', '.go_thumb_btn', function(){ 
+	createThumbnail();
+});

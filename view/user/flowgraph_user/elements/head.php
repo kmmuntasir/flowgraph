@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="<?php echo $fullpath; ?>assets/bootstrap/4.1.3/css/bootstrap.min.css">
+    
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/style.css">
     <link rel="stylesheet" href="<?php echo $fullpath; ?>css/media_queries.css">
