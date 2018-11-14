@@ -14,22 +14,22 @@
             <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo site_url($module."/home"); ?>">Home</a>
+                    <a class="<?php if($page == 'home') echo 'active '; ?>nav-link" href="<?php echo site_url($module."/home"); ?>">Create</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo site_url($module."/home/browse"); ?>">Browse Flowcharts</a>
+                    <a class="<?php if($page == 'browse') echo 'active '; ?>nav-link" href="<?php echo site_url($module."/home/browse"); ?>">Browse Flowcharts</a>
                 </li>
                 <?php if(isset($this->session->user_id)) { ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Message Dropdown</a>
+                    <a class="<?php if($page == 'my_charts') echo 'active '; ?>nav-link" href="<?php echo site_url($module.'/home/my_charts'); ?>">My Charts</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Mr. John
+                        <?php echo $this->session->user_name; ?>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="<?php echo site_url($module.'/profile'); ?>">Profile</a>
+                        <a class="dropdown-item" href="<?php echo site_url($module.'/profile/change_pwd'); ?>">Change Password</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="<?php echo site_url($module.'/login/logout'); ?>">Logout</a>
                     </div>
@@ -40,7 +40,7 @@
                         Login
                     </a>
                     <div id="loginDropdownmenu" class="dropdown-menu" aria-labelledby="loginDropdown">
-                        <form class="form-control" action="<?php echo site_url(); ?>" method="post">
+                        <form class="form-control" action="<?php echo site_url($module.'/login/login_process'); ?>" method="post">
                             <div class="form-group">
                                 <label>Email Address</label>
                                 <input type="text" name="user_email" placeholder="Your Email" class="form-control">
@@ -48,6 +48,10 @@
                             <div class="form-group">
                                 <label>Password</label>
                                 <input type="password" name="user_pass" placeholder="Password" class="form-control">
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="remember_me_checkbox" name="remember">
+                              <label class="custom-control-label pointer small pt-1" for="remember_me_checkbox">Remember Me</label>
                             </div>
                             <button type="submit" class="btn btn-primary float-right">
                                 <i class="fas fa-sign-in-alt"></i> Login

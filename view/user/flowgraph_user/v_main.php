@@ -16,7 +16,13 @@
 		echo '<input type="hidden" id="fetch_graph_url" value="'.$fetch_graph_url.'">';
 	}
 
+	if(isset($this->session->user_id)) {
+		echo '<input type="hidden" id="user_id" value="'.$this->session->user_id.'">';
+	}
+
 ?>
+
+
 
 <!-- Loader -->
 <div id="overlay_loader">

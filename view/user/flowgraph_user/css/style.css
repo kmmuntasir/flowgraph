@@ -33,7 +33,7 @@ p {
     color: #999;
 }
 
-.pointer {
+.pointer, .anchor {
     cursor: pointer;
 }
 
@@ -56,6 +56,10 @@ p {
 
 #main_nav_link > ul > li > a:hover {
     border-bottom: solid 3px #333;
+}
+
+#main_nav_link > ul > li > a.active {
+    border-bottom: solid 3px #2780E3;
 }
 
 .navbar-brand {
@@ -173,7 +177,6 @@ p {
 ----------------------------------------------------- */
 .single_thumb {
     margin-bottom: 2em;
-    cursor: pointer;
     transition: all 300ms ease;
 }
 
@@ -184,7 +187,7 @@ p {
 .single_thumb .card {
     box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
     border: none;
-    transition: all 300ms ease;
+    transition: all 200ms ease;
 }
 .single_thumb .card:hover {
     box-shadow: 0px 0px 30px rgba(0,0,0,0.4);

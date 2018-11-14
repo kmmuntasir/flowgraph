@@ -12,27 +12,27 @@
 				<i class="fas fa-play"></i>
 				Simulate
 			</button>
-			<button class="go_save_btn btn btn-primary btn-lg">
+			<?php if(isset($this->session->user_id)) { ?>
+			<button id="SaveButton" class="go_save_btn btn btn-primary btn-lg">
 				<i class="fas fa-save"></i>
 				Save
 			</button>
+			<?php } ?>
 			<button class="go_print_btn btn btn-info btn-lg">
 				<i class="fas fa-print"></i>
 				Print
 			</button>
-			<button class="go_thumb_btn btn btn-warning btn-lg">
-				<i class="fas fa-image"></i>
-				Thumb
-			</button>
+			<a id="go_img_btn" download="graph.jpeg" href="#" class="btn btn-warning btn-lg">
+				<i id="image_icon" class="fas fa-image"></i>
+				<span id="image_text">Download as Image</span>
+			</a>
 		</div>
 
-		<div style="display: block">
-			<button id="SaveButton">Save</button>
+		<div style="display: none;">
+			<!-- <button id="SaveButton">Save</button> -->
 			<button id="LoadButton">Load</button>
 
-			<textarea id="mySavedModel">
-				
-			</textarea>
+			<textarea id="mySavedModel"><?php echo $graph_json; ?></textarea>
 		</div>
 	</div>
 	<div class="clearfix"></div>

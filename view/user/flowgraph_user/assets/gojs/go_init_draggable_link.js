@@ -34,7 +34,7 @@ function init() {
     // when the document is modified, add a "*" to the title and enable the "Save" button
     myDiagram.addDiagramListener("Modified", function(e) {
       var button = document.getElementById("SaveButton");
-      if (button) button.disabled = !myDiagram.isModified;
+      if (button && myDiagram.isModified) button.disabled = false;
       var idx = document.title.indexOf("*");
       if (myDiagram.isModified) {
         if (idx < 0) document.title += "*";
@@ -224,7 +224,7 @@ function init() {
             // { text: "DB", figure: "Database", fill: "lightgray" },
             { text: "Condition", figure: "Diamond", fill: "lightskyblue", type: "condition"},
             { text: "Comment", figure: "Rectangle", fill: "lightyellow", type: "comment"},
-            { text: "End", figure: "Circle", fill: "#CE0620", type: "end"}
+            { text: "Stop", figure: "Circle", fill: "#CE0620", type: "end"}
             ], [
             // the Palette also has a disconnected Link, which the user can drag-and-drop
             { points: new go.List(go.Point).addAll([new go.Point(0, 0), new go.Point(30, 0), new go.Point(30, 40), new go.Point(60, 40)]) }
@@ -272,7 +272,7 @@ function init() {
     // set Diagram.initialPosition, not Diagram.position, to handle initialization side-effects
     var pos = myDiagram.model.modelData.position;
     if (pos) myDiagram.initialPosition = go.Point.parse(pos);
-    $('#curtain_2 p').html('Loading Complete');
+    post_load_fn();
   }
 
   
@@ -304,7 +304,22 @@ function init() {
       details: 0.4,
       type: "image/jpeg"
     });
-    $('body').append(img);
-    // var src = $(img).attr('src');
-    // console.log(src);
+    // $('body').append(img);
+    var base64 = $(img).attr('src');
+    // console.log(base64);
+    return base64;
+  }
+
+
+  function createImage() {
+    var img = myDiagram.makeImage({
+      scale: 1.5,
+      background: "white",
+      details: 1,
+      type: "image/jpeg"
+    });
+    // $('body').append(img);
+    var base64 = $(img).attr('src');
+    // console.log(base64);
+    return base64;
   }
