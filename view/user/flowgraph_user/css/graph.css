@@ -65,12 +65,21 @@
 	border-left: solid 1px #000;
 }
 
+#myExplanationDiv {
+	width: 300px;
+	border-left: solid 1px #000;
+}
+
+#myExplanationDiv .card {
+	height: 100%;
+}
+
 #model_container {
 	width:100%;
 }
 
 .graph_buttons_container {
-	max-width: 600px;
+	max-width: 700px;
 	margin: 0 auto;
 	display: flex;
 	justify-content: space-between;

@@ -17,7 +17,7 @@ class Home extends User_Controller {
 	function index() {
 		$data = $this->data;
 		$data['page'] = $this->router->fetch_class();
-		$data['page_title'] = ucfirst($this->router->fetch_class());
+		$data['page_title'] = 'Welcome to Flowgraph';
 		$data['graph'] = true;
 		$data['graph_id'] = NULL;
 		$data['graph_json'] = $this->fetch_graph_json(NULL, true);
@@ -36,6 +36,7 @@ class Home extends User_Controller {
 	}
 
 	function my_charts() {
+		$this->__security($this->module);
 		$data = $this->data;
 		$data['page'] = $this->router->fetch_method();
 		$data['page_title'] = "My Charts";
@@ -60,6 +61,9 @@ class Home extends User_Controller {
 
 	function save_graph() {
 		if(!$this->__is_logged_in($this->module)) exit('You have to be logged in to save graph');
+
+		if(!isset($_POST['graph_thumb']) || !isset($_POST['graph_name']) || !isset($_POST['graph_json'])) exit('Invalid Data Provided');
+		
 		$_POST['user_id'] = $this->session->user_id;
 		$_POST['graph_datetime'] = $this->now();
 		$_POST['graph_thumb'] = $this->store_image($_POST['graph_thumb'], 'jpeg');
@@ -67,6 +71,27 @@ class Home extends User_Controller {
 
 		$status = $this->m_home->save_graph($_POST);
 		if($status) echo 'success';
+		else {
+			unlink($this->thumb_dir.$_POST['graph_thumb']);
+			echo 'Something went wrong';
+		}
+	}
+
+	function update_graph($graph_id=NULL) {
+		if(!$this->__is_logged_in($this->module)) exit('You have to be logged in to update graph');
+		if(!$graph_id) exit('No Graph ID Found');
+		$graph = $this->m_home->fetch_single_graph_info($graph_id);
+		if(!$graph) exit('Invalid Graph ID');
+		if($graph->user_id != $this->session->user_id) exit('This is not your graph');
+		if(!isset($_POST['graph_thumb']) || !isset($_POST['graph_name']) || !isset($_POST['graph_json'])) exit('Invalid Data Provided');
+		$_POST['graph_thumb'] = $this->store_image($_POST['graph_thumb'], 'jpeg');
+		// $this->printer($_POST, true);
+
+		$status = $this->m_home->update_graph($_POST, $graph_id);
+		if($status) {
+			unlink($this->thumb_dir.$graph->graph_thumb);
+			echo 'success';
+		}
 		else {
 			unlink($this->thumb_dir.$_POST['graph_thumb']);
 			echo 'Something went wrong';

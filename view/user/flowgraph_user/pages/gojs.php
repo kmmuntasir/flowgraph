@@ -4,6 +4,14 @@
 		<div id="myPaletteDiv"></div>
 		<div id="curtain_2"><p>Loading Graph ...</p></div>
 		<div id="myDiagramDiv"></div>
+		<div id="myExplanationDiv">
+			<div class="card">
+				<h5 class="card-header">Explanation</h5>
+				<div class="card-body">
+
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<div id="model_container"> <!-- style="display: none;"> -->
@@ -13,9 +21,15 @@
 				Simulate
 			</button>
 			<?php if(isset($this->session->user_id)) { ?>
-			<button id="SaveButton" class="go_save_btn btn btn-primary btn-lg">
+			<button graph_id="<?php echo $graph_id; ?>" id="SaveButton" class="go_save_btn btn btn-primary btn-lg" disabled>
 				<i class="fas fa-save"></i>
-				Save
+				<?php
+					if($graph_id == NULL) echo 'Save'; // Homepage, new graph
+					// Own graph, editing
+					else if($single_graph->user_id == $this->session->user_id) echo 'Save Changes';
+					// Other people's graph, saving as new to my charts
+					else echo 'Save As New';
+				?>
 			</button>
 			<?php } ?>
 			<button class="go_print_btn btn btn-info btn-lg">

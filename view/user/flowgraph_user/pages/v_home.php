@@ -11,6 +11,10 @@
 </div>
 </div> <!-- Row end -->
 
+<div class="row">
+	<h1>Help</h1>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="graph_save_modal" tabindex="-1" role="dialog" aria-labelledby="graph_save_modal_label" aria-hidden="true">
@@ -25,7 +29,7 @@
 			</div>
 			<div class="modal-body">
 				<label>Graph Name</label>
-				<input autofocus class="form-control" type="text" name="graph_name" required placeholder="This field is required">
+				<input autofocus class="form-control" type="text" name="graph_name" required placeholder="*This field is required">
 			</div>
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary">Save</button>

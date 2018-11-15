@@ -18,6 +18,8 @@
 
 	if(isset($this->session->user_id)) {
 		echo '<input type="hidden" id="user_id" value="'.$this->session->user_id.'">';
+		if($page == 'viewgraph')
+			echo '<input type="hidden" id="graph_user_id" value="'.$single_graph->user_id.'">';
 	}
 
 ?>
