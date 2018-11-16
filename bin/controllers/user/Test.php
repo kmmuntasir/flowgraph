@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Home extends User_Controller {
+class Test extends User_Controller {
 
 	public $thumb_dir = "img/thumbs/";
 	

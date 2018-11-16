@@ -21,6 +21,12 @@ function extractAllQuotedText(str){
 }
 
 $(document).ready(function() {
+
+
+
+
+
+	// return;
 	var v = [];
 	var nodes = [];
 	nodes[0] = {'type':'step','text':'Sum=0'};
@@ -33,7 +39,7 @@ $(document).ready(function() {
 	nodes[7] = {'type':'step','text':'Sum = Sum + i'};
 	nodes[8] = {'type':'io','text':'Read Sum'};
 	nodes[9] = {'type':'io','text':'Print "haha I forgot to laugh"'};
-	// nodes[10] = {'type':'step','text':'Sum=0'};
+	nodes[10] = {'type':'io','text':'show p'};
 	// nodes[11] = {'type':'step','text':'Sum=0'};
 	// nodes[12] = {'type':'step','text':'Sum=0'};
 	// nodes[13] = {'type':'step','text':'Sum=0'};
@@ -53,30 +59,54 @@ $(document).ready(function() {
 			// var temp = nodes[i].text.split(' ');
 			var fidx = nodes[i].text.indexOf(' ');
 			// alert(fidx);
-			var temp = [];
-			temp[0] = nodes[i].text.substr(0, fidx);
-			temp[1] = nodes[i].text.substr(fidx+1);
+			var iotemp = [];
+			iotemp[0] = nodes[i].text.substr(0, fidx);
+			iotemp[1] = nodes[i].text.substr(fidx+1);
 
 
-			console.log(temp);
-			if(temp.length != 2) {
-				// alert('This is not a valid Input/Output Statement');
+			// console.log(iotemp);
+			// Valid I/O structure
+			var command = iotemp[0];
+			command = command.toLowerCase();
+			if(command == 'input' || command == 'read' || command == 'fetch' || command == 'get') {
+				// Input Statement
 			}
-			else { // Valid I/O structure
-				var command = temp[0];
-				command = command.toLowerCase();
-				if(command == 'input' || command == 'read' || command == 'fetch' || command == 'get') {
-					// Input Statement
+			else if(command == 'output' || command == 'print' || command == 'show' || command == 'display') {
+				// Output Statement
+
+				var str = iotemp[1];
+				str = sanitize(str);
+				var fc = str.substr(0, 1);
+				var lc = str.substr(str.length - 1, 1);
+				var mp = str.substr(1, (str.length-2));
+
+				if(fc == '"' && lc == '"' && mp.indexOf('"') == -1) {
+					// Valid quoted string
+					// output this string (str);
 				}
-				else if(command == 'output' || command == 'print' || command == 'show' || command == 'display') {
-					// Output Statement
+				else { // Possible Variable
+					vartemp = str.split(' ');
+					if(vartemp.length == 1 && str.indexOf('"') == -1){
+						// Valid variable
+						// Output the value of the variable if it exists, if not then throw exception
+					}
+					else {
+						// Invalid variable && Invalid Quoted String
+						// Invalid IO Statement
+					}
 				}
-				else {
-					alert('This is not a valid Input/Output Statement');
-				}
+
+
 			}
+			else {
+				alert('This is not a valid Input/Output Statement');
+			}
+
+			// ======================================
+			output(nodes[i].type + ': ' + nodes[i].text);
+
 		}
 
-		output(nodes[i].type + ': ' + nodes[i].text);
+		// output(nodes[i].type + ': ' + nodes[i].text);
 	}
 });
