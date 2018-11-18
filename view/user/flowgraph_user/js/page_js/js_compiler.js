@@ -29,6 +29,19 @@ function replace_all(text, search, replacement) {
 	return text;
 }
 
+function divide(str, splitter) {
+	var splitIdx = str.indexOf(splitter);
+	var str_parts = [];
+	if(splitIdx == -1) {
+		str_parts[0] = str;
+	}
+	else {
+		str_parts[0] = str.substr(0, splitIdx);
+		str_parts[1] = str.substr(splitIdx+1);
+	}
+	return str_parts;
+}
+
 function validate_identifier(variable_name) {
 	if(isAlpha(variable_name.substr(0, 1)) || variable_name.substr(0, 1) == '_' ) {
 		for (var i = 1; i < variable_name.length; i++) {
@@ -63,29 +76,35 @@ $(document).ready(function() {
 
 	// return;
 
-	v['x'] = 5;
+	v['x'] = 50;
 	v['y'] = 10;
-	v['a'] = 15;
+	v['a'] = 35;
 	v['b'] = 20;
 
-	var exp = '((x+y)*(a-b))/2';
+	// x+y+z
+	// ((x+y)*(a-b))/2
+	// p
+	// 5
+	// var exp = '((x+y)*(a-b))/2';
 
-	var value = parse_expression(exp);
-	alert(value);
+	// var value = parse_expression(exp);
+	// alert(value);
 
-	return;
+	// return;
 	var nodes = [];
-	nodes[0] = {'type':'step','text':'Sum=0'};
-	nodes[1] = {'type':'step','text':'Sum = 0'};
-	nodes[2] = {'type':'step','text':'Sum=0, i=1'};
-	nodes[3] = {'type':'io','text':'   Input     N '};
-	nodes[4] = {'type':'step','text':'i = i + 1'};
-	nodes[5] = {'type':'step','text':'Sum:=0'};
-	nodes[6] = {'type':'condition','text':'i<N'};
-	nodes[7] = {'type':'step','text':'Sum = Sum + i'};
-	nodes[8] = {'type':'io','text':'Read Sum'};
-	nodes[9] = {'type':'io','text':'Print "haha I forgot to laugh"'};
-	nodes[10] = {'type':'io','text':'show p'};
+	// nodes.push({'type':'step', 'text':'p=q=r=((x+y)*(a-b))/2'});
+	nodes.push({'type':'step','text':'Sum=0'});
+	// nodes.push({'type':'step','text':'Sum = 0'});
+	// nodes.push({'type':'step','text':'Sum=0, i=1'});
+	// nodes.push({'type':'io','text':'   Input     N '});
+	// nodes.push({'type':'step','text':'i = i + 1'});
+	// nodes.push({'type':'step','text':'Sum:=0'});
+	// nodes.push({'type':'condition','text':'i<N'});
+	// nodes.push({'type':'step','text':'Sum = Sum + i'});
+	// nodes.push({'type':'io','text':'Read Sum'});
+	// nodes.push({'type':'io','text':'Print "haha I forgot to laugh"'});
+	// nodes.push({'type':'io','text':'show p'});
+
 	// nodes[11] = {'type':'step','text':'Sum=0'};
 	// nodes[12] = {'type':'step','text':'Sum=0'};
 	// nodes[13] = {'type':'step','text':'Sum=0'};
@@ -104,11 +123,17 @@ $(document).ready(function() {
 			io_process(nodes[i].text);
 		}
 		else if(nodes[i].type == 'step') {
-			step_process(nodes[i].text);
+			comma_separated_steps = nodes[i].text.split(',');
+			// console.log(comma_separated_steps);
+			for(var k=0; k<comma_separated_steps.length; ++k) {
+				step_process(comma_separated_steps[i], 0);	
+			}
 		}
-
-
+		else if(nodes[i].type == 'condition') {
+			condition_process(nodes[i].text);
+		}
 		output(nodes[i].type + ': ' + nodes[i].text);
+		console.log(v);
 	}
 });
 
@@ -116,10 +141,12 @@ $(document).ready(function() {
 
 function io_process(text) {
 	text = sanitize(text);
-	var splitIdx = text.indexOf(' ');
-	var iotemp = [];
-	iotemp[0] = text.substr(0, splitIdx);
-	iotemp[1] = sanitize(text.substr(splitIdx+1));
+
+	iotemp = divide(text, ' ');
+	// var splitIdx = text.indexOf(' ');
+	// var iotemp = [];
+	// iotemp[0] = text.substr(0, splitIdx);
+	// iotemp[1] = sanitize(text.substr(splitIdx+1));
 
 
 	// Valid I/O structure
@@ -173,26 +200,49 @@ function io_process_input(str) {
 
 // ======================== Step Functions =====================
 
-function step_process(step_text, level=0) {
-	if(level=0) step_text = replace_all(step_text, ' ', '');
-	step_parts = step_text.split('=');
+function step_process(step_text, level) {
+	if(level==0) step_text = replace_all(step_text, ' ', '');
+
+
+
+
+	var step_parts = divide(step_text, '=');
+
+
+	// step_parts = step_text.split('=');
+
+	// var splitIdx = step_text.indexOf('=');
+	// var step_parts = [];
+	// step_parts[0] = step_text.substr(0, splitIdx);
+	// step_parts[1] = sanitize(step_text.substr(splitIdx+1));
+
+
+
+
 	if(step_parts.length < 2) {
 		if(level == 0) {
 			// Invalid step, no assignment operator found
 			// Throw exception
-
+			console.log("Invalid Step");
 		}
 		else {
 			// Possibly expression
-			return expression_process(step_text);
+			return parse_expression(step_text);
 		}
 	}
 	else {
 		if(validate_identifier(step_parts[0])) {
-			var step_temp = step_process(step_parts[1], level+1);
+			// console.log(step_parts[0]);
+			// console.log(step_parts[1]);
+			var step_temp = step_process(step_parts[1], ++level);
+			// console.log(step_temp);
+
+			// console.log(step_parts[0] + "=" + step_parts[1] + ' => ' + step_temp);
+
 			if(step_temp != false) {
 				v[step_parts[0]] = step_temp;
 				// Process animation for showing this new/old variable
+				console.log(step_parts[0] + ' => ' + v[step_parts[0]]);
 				return v[step_parts[0]];
 			}
 			else return false;
@@ -203,21 +253,13 @@ function step_process(step_text, level=0) {
 	}
 }
 
-// a = b = c = x + y + z
-
-// x + y + z
-
-function expression_process(exp) {
+function parse_expression(exp_str) {
+	// alert(exp_str);
 	// x+y+z
 	// ((x+y)*(a-b))/2
 	// p
 	// 5
 
-
-
-}
-
-function parse_expression(exp_str) {
 	var exp = exp_str; // taking backup
 	exp = replace_all(exp, "(", " ");
 	exp = replace_all(exp, ")", " ");
@@ -231,17 +273,16 @@ function parse_expression(exp_str) {
 	if(vars.length == 1) return process_var_const(exp); //single variable or constant
 	else { // multiple variables and/or constants found
 
-		console.log(exp_str);
+		// console.log(exp_str);
 		for(var i=0; i<vars.length; ++i) {
 			var val_temp = process_var_const(vars[i]);
 			if(val_temp == false) return false; // value not found
 			// value found, replace this variable (if) name with this value in the expression
 			if(val_temp == vars[i]) continue; // constant, no need to replace
 			exp_str = replace_all(exp_str, vars[i], val_temp);
-			console.log(exp_str);
+			// console.log(exp_str);
 		}
 		var final_value = eval(exp_str);
-		console.log(final_value);
 		return final_value;
 	}
 }
@@ -254,4 +295,12 @@ function process_var_const(exp) {
 	if(!check_var(exp)) return false; //non-existent variable
 	// existing valid variable
 	return v[exp]; // return the value of the variable
+}
+
+
+// ======================== Condition Functions =====================
+
+
+function condition_process(condition) {
+	console.log(condition);
 }
