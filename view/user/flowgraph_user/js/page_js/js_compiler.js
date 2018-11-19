@@ -1,6 +1,13 @@
 var v = [];
+var curr_node = 0;
+
+window.onerror = function(e) {
+	alert("There's an error in node " + curr_node + ": " + e);
+};
 
 function output(data) {
+	data = replace_all(data, '<', '&lt');
+	data = replace_all(data, '>', '&gt');
 	$('#output').append('<pre>'+data+'</pre>');
 }
 
@@ -37,7 +44,7 @@ function divide(str, splitter) {
 	}
 	else {
 		str_parts[0] = str.substr(0, splitIdx);
-		str_parts[1] = str.substr(splitIdx+1);
+		str_parts[1] = str.substr(splitIdx+splitter.length);
 	}
 	return str_parts;
 }
@@ -68,18 +75,10 @@ function check_var(var_name) {
 
 $(document).ready(function() {
 
-	// var str = "hello589ddkk";
-
-	// var temp = replace_all(str, 'd', 'p');
-
-	// alert(temp);
-
-	// return;
-
-	v['x'] = 50;
-	v['y'] = 10;
-	v['a'] = 35;
-	v['b'] = 20;
+	// v['x'] = 50;
+	// v['y'] = 10;
+	// v['a'] = 35;
+	// v['b'] = 20;
 
 	// x+y+z
 	// ((x+y)*(a-b))/2
@@ -92,15 +91,21 @@ $(document).ready(function() {
 
 	// return;
 	var nodes = [];
-	// nodes.push({'type':'step', 'text':'p=q=r=((x+y)*(a-b))/2'});
-	nodes.push({'type':'step','text':'Sum=0'});
-	// nodes.push({'type':'step','text':'Sum = 0'});
-	// nodes.push({'type':'step','text':'Sum=0, i=1'});
-	// nodes.push({'type':'io','text':'   Input     N '});
-	// nodes.push({'type':'step','text':'i = i + 1'});
+	// nodes.push({'type':'step', 'text':'p:=q:=r:=((x+y)*(a-b))/2'});
 	// nodes.push({'type':'step','text':'Sum:=0'});
-	// nodes.push({'type':'condition','text':'i<N'});
-	// nodes.push({'type':'step','text':'Sum = Sum + i'});
+	// nodes.push({'type':'step','text':'sum := 3'});
+	nodes.push({'type':'step','text':'Sum:=97, i:=1'});
+	nodes.push({'type':'io','text':'   Input     N '});
+	// nodes.push({'type':'step','text':'i := i + 1'});
+	// nodes.push({'type':'step','text':'Sum := Sum + i'});
+
+	nodes.push({'type':'condition','text':'i<N'});
+	nodes.push({'type':'condition','text':'(i<N)'});
+	nodes.push({'type':'condition','text':'((i<Sum))'});
+	nodes.push({'type':'condition','text':'((i+N) > 3)'});
+	nodes.push({'type':'condition','text':'(i>N) AND (i=1)'});
+	nodes.push({'type':'condition','text':'(i<N) AND ((i=1) OR (i=2))'});
+
 	// nodes.push({'type':'io','text':'Read Sum'});
 	// nodes.push({'type':'io','text':'Print "haha I forgot to laugh"'});
 	// nodes.push({'type':'io','text':'show p'});
@@ -119,18 +124,21 @@ $(document).ready(function() {
 	// nodes[22] = {'type':'step','text':'Sum=0'};
 
 	for(var i=0; i<nodes.length; i++) {
+		curr_node = i;
 		if(nodes[i].type == 'io') {
+			console.log(nodes[i].text);
 			io_process(nodes[i].text);
 		}
 		else if(nodes[i].type == 'step') {
 			comma_separated_steps = nodes[i].text.split(',');
-			// console.log(comma_separated_steps);
+			console.log(comma_separated_steps);
 			for(var k=0; k<comma_separated_steps.length; ++k) {
-				step_process(comma_separated_steps[i], 0);	
+				step_process(comma_separated_steps[k]);	
 			}
 		}
 		else if(nodes[i].type == 'condition') {
-			condition_process(nodes[i].text);
+			var condition_result = condition_process(nodes[i].text);
+			console.log(condition_result);
 		}
 		output(nodes[i].type + ': ' + nodes[i].text);
 		console.log(v);
@@ -200,24 +208,12 @@ function io_process_input(str) {
 
 // ======================== Step Functions =====================
 
-function step_process(step_text, level) {
+function step_process(step_text, level=0) {
+	// console.log(step_text + ' - ' + level);
 	if(level==0) step_text = replace_all(step_text, ' ', '');
+	var step_parts = divide(step_text, ':=');
 
-
-
-
-	var step_parts = divide(step_text, '=');
-
-
-	// step_parts = step_text.split('=');
-
-	// var splitIdx = step_text.indexOf('=');
-	// var step_parts = [];
-	// step_parts[0] = step_text.substr(0, splitIdx);
-	// step_parts[1] = sanitize(step_text.substr(splitIdx+1));
-
-
-
+	// console.log(step_parts);
 
 	if(step_parts.length < 2) {
 		if(level == 0) {
@@ -232,6 +228,7 @@ function step_process(step_text, level) {
 	}
 	else {
 		if(validate_identifier(step_parts[0])) {
+
 			// console.log(step_parts[0]);
 			// console.log(step_parts[1]);
 			var step_temp = step_process(step_parts[1], ++level);
@@ -239,10 +236,10 @@ function step_process(step_text, level) {
 
 			// console.log(step_parts[0] + "=" + step_parts[1] + ' => ' + step_temp);
 
-			if(step_temp != false) {
-				v[step_parts[0]] = step_temp;
+			if(step_temp !== false) {
+				v[step_parts[0]] = parseInt(step_temp);
 				// Process animation for showing this new/old variable
-				console.log(step_parts[0] + ' => ' + v[step_parts[0]]);
+				// console.log(step_parts[0] + ' => ' + v[step_parts[0]]);
 				return v[step_parts[0]];
 			}
 			else return false;
@@ -254,7 +251,6 @@ function step_process(step_text, level) {
 }
 
 function parse_expression(exp_str) {
-	// alert(exp_str);
 	// x+y+z
 	// ((x+y)*(a-b))/2
 	// p
@@ -267,6 +263,7 @@ function parse_expression(exp_str) {
 	exp = replace_all(exp, "-", " ");
 	exp = replace_all(exp, "*", " ");
 	exp = replace_all(exp, "/", " ");
+	exp = replace_all(exp, "%", " ");
 
 	exp = sanitize(exp);
 	var vars = exp.split(' ');
@@ -276,7 +273,7 @@ function parse_expression(exp_str) {
 		// console.log(exp_str);
 		for(var i=0; i<vars.length; ++i) {
 			var val_temp = process_var_const(vars[i]);
-			if(val_temp == false) return false; // value not found
+			if(val_temp === false) return false; // value not found
 			// value found, replace this variable (if) name with this value in the expression
 			if(val_temp == vars[i]) continue; // constant, no need to replace
 			exp_str = replace_all(exp_str, vars[i], val_temp);
@@ -301,6 +298,60 @@ function process_var_const(exp) {
 // ======================== Condition Functions =====================
 
 
-function condition_process(condition) {
-	console.log(condition);
+function condition_process(condition, level=0) {
+	return parse_condition(condition);
+}
+
+
+function parse_condition(exp_str) {
+	// 5>1 && (1==1 || 5<1)
+	// (i<5) AND ((i=1) OR (i=2))
+
+	console.log(exp_str);
+
+	exp_str = replace_all(exp_str, "AND", "&&");
+	exp_str = replace_all(exp_str, "OR", "||");
+	exp_str = replace_all(exp_str, "NOT", "!");
+	exp_str = replace_all(exp_str, "and", "&&");
+	exp_str = replace_all(exp_str, "or", "||");
+	exp_str = replace_all(exp_str, "not", "!");
+
+	var exp = exp_str; // taking backup
+	exp = replace_all(exp, "(", " ");
+	exp = replace_all(exp, ")", " ");
+	exp = replace_all(exp, "<", " ");
+	exp = replace_all(exp, ">", " ");
+	exp = replace_all(exp, "=", " ");
+	exp = replace_all(exp, "&", " ");
+	exp = replace_all(exp, "|", " ");
+	exp = replace_all(exp, "!", " ");
+	exp = replace_all(exp, "+", " ");
+	exp = replace_all(exp, "-", " ");
+	exp = replace_all(exp, "*", " ");
+	exp = replace_all(exp, "/", " ");
+	exp = replace_all(exp, "%", " ");
+
+	exp = sanitize(exp);
+	var vars = exp.split(' ');
+	if(vars.length == 1) return process_var_const(exp); //single variable or constant
+	else { // multiple variables and/or constants found
+
+		// console.log(exp_str);
+		for(var i=0; i<vars.length; ++i) {
+			var val_temp = process_var_const(vars[i]);
+			if(val_temp === false) return false; // value not found
+			// value found, replace this variable (if) name with this value in the expression
+			if(val_temp == vars[i]) continue; // constant, no need to replace
+			exp_str = replace_all(exp_str, vars[i], val_temp);
+			// console.log(exp_str);
+		}
+
+		exp_str = replace_all(exp_str, "=", "$");
+		exp_str = replace_all(exp_str, "$", "==");
+
+		console.log(exp_str);
+
+		var final_value = eval(exp_str);
+		return final_value;
+	}
 }
