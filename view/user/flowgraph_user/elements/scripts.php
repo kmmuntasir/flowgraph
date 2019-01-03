@@ -31,12 +31,13 @@
 
 <!-- custom js -->
 <script src="<?php echo $fullpath; ?>js/master.js"></script>
-<script src="<?php echo $fullpath; ?>js/master-datatables.js"></script>
+<!-- <script src="<?php echo $fullpath; ?>js/master-datatables.js"></script> -->
 
 <?php if(isset($graph)) { ?>
 <!-- GO JS Scripts  -->
 <script src="<?php echo $fullpath; ?>assets/gojs/go_debug.js"></script>
-<script src="<?php echo $fullpath; ?>assets/gojs/go_init_draggable_link.js"></script>
+<!-- <script src="<?php echo $fullpath; ?>assets/gojs/go_init_draggable_link.js"></script> -->
+<script src="<?php echo $fullpath; ?>assets/gojs/go_init_flowchart.js"></script>
 <script src="<?php echo $fullpath; ?>js/gojs_script.js"></script>
 <?php } ?>
 
