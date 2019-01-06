@@ -7,6 +7,10 @@ $(document).ready(function() {
 	// });
 });
 
+function pre_load_fn() {
+	$('#curtain_2 p').html('Loading Graph ...');
+}
+
 function post_load_fn() {
 	$('#curtain_2 p').html('Loading Complete');
 }

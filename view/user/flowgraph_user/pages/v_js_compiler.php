@@ -6,13 +6,18 @@
 	}
 
 	#output {
-		padding: 20px;
-		font-size: 30px;
+		padding: 10px;
+		font-size: 20px;
 	}
 
 	#output pre {
 		margin: 0;
 		margin-bottom: 0.1em;
+	}
+
+	#output hr {
+		margin-top: 5px;
+		margin-bottom: 10px;
 	}
 </style>
 

@@ -379,7 +379,9 @@ function init() {
     myDiagram.isModified = false;
   }
   function load_graph() {
+    pre_load_fn();
     myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+    post_load_fn();
   }
 
   // print the diagram by opening a new window holding SVG images of the diagram contents for each page

@@ -19,6 +19,11 @@
                 <li class="nav-item">
                     <a class="<?php if($page == 'browse') echo 'active '; ?>nav-link" href="<?php echo site_url($module."/home/browse"); ?>">Browse Flowcharts</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="<?php if($page == 'js_compiler') echo 'active '; ?>nav-link" href="<?php echo site_url($module."/test/js_compiler"); ?>">Test Compiler</a>
+                </li>
+
                 <?php if(isset($this->session->user_id)) { ?>
                 <li class="nav-item">
                     <a class="<?php if($page == 'my_charts') echo 'active '; ?>nav-link" href="<?php echo site_url($module.'/home/my_charts'); ?>">My Charts</a>
