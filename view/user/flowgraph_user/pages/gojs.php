@@ -42,7 +42,7 @@
 			</a>
 		</div>
 
-		<div style="display: none;">
+		<div style="display: block;">
 			<!-- <button id="SaveButton">Save</button> -->
 			<button id="LoadButton">Load</button>
 

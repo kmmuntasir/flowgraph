@@ -123,7 +123,7 @@ function initiate_sample_data() {
 	nodes.push({'category':'condition','text':'i<N'});
 	nodes.push({'category':'condition','text':'(i<N)'});
 	nodes.push({'category':'condition','text':'((i<Sum))'});
-	nodes.push({'category':'condition','text':'((i+N) < 3)'});
+	nodes.push({'category':'condition','text':'((i+N) > 3)'});
 	nodes.push({'category':'condition','text':'(i>N) AND (i=1)'});
 	nodes.push({'category':'condition','text':'(i<N) AND ((i=1) OR (i=2))'});
 
@@ -137,19 +137,19 @@ function initiate_sample_data() {
 
 function process_single_node(node) {
 	if(node.category == 'io') {
-		// console.log(node.text);
+		console.log(node.text);
 		io_process(node.text);
 	}
 	else if(node.category == 'step') {
 		comma_separated_steps = node.text.split(',');
-		// console.log(comma_separated_steps);
+		console.log(comma_separated_steps);
 		for(var k=0; k<comma_separated_steps.length; ++k) {
 			step_process(comma_separated_steps[k]);	
 		}
 	}
 	else if(node.category == 'condition') {
 		var condition_result = condition_process(node.text);
-		// console.log(condition_result);
+		console.log(condition_result);
 	}
 }
 
@@ -296,7 +296,7 @@ function parse_expression(exp_str) {
 			// value found, replace this variable (if) name with this value in the expression
 			if(val_temp == vars[i]) continue; // constant, no need to replace
 			exp_str = replace_all(exp_str, vars[i], val_temp);
-			// console.log(exp_str);
+			console.log(exp_str);
 		}
 		var final_value = eval(exp_str);
 		return final_value;
@@ -326,7 +326,7 @@ function parse_condition(exp_str) {
 	// 5>1 && (1==1 || 5<1)
 	// (i<5) AND ((i=1) OR (i=2))
 
-	// console.log(exp_str);
+	console.log(exp_str);
 
 	exp_str = replace_all(exp_str, "AND", "&&");
 	exp_str = replace_all(exp_str, "OR", "||");
@@ -368,7 +368,7 @@ function parse_condition(exp_str) {
 		exp_str = replace_all(exp_str, "=", "$");
 		exp_str = replace_all(exp_str, "$", "==");
 
-		// console.log(exp_str);
+		console.log(exp_str);
 
 		var final_value = eval(exp_str);
 		return final_value;
