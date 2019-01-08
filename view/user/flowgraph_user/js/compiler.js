@@ -7,22 +7,6 @@ window.onerror = function(e) {
 	alert("There's an error in node " + curr_node + ": " + e);
 };
 
-function output(data) {
-	data = replace_all(data, '<', '&lt');
-	data = replace_all(data, '>', '&gt');
-	$('#output').append('<pre>'+data+'</pre>');
-}
-
-function display_vars() {
-	var blank_str = "";
-	var delimiter = "";
-	for(var k=0; k<var_list.length; ++k) {
-		blank_str += delimiter + var_list[k] + ' = ' + v[var_list[k]];
-		delimiter = ", ";
-	}
-	$('#output').append('<pre>'+blank_str+'</pre><hr>');
-}
-
 function isDigit(ch){
   return /^[0-9]$/i.test(ch);
 }
@@ -115,7 +99,7 @@ function initiate_sample_data() {
 
 	nodes.push({'category':'step', 'text':'p:=q:=r:=((x+y)*(a-b))/2'});
 	nodes.push({'category':'step','text':'Sum:=0'});
-	nodes.push({'category':'step','text':'sum := 3'});
+	nodes.push({'category':'step','text':'sum := 3, N := 2'});
 	nodes.push({'category':'step','text':'Sum:=97, i:=1'});
 	nodes.push({'category':'step','text':'i := i + 1'});
 	nodes.push({'category':'step','text':'Sum := Sum + i'});
@@ -137,19 +121,19 @@ function initiate_sample_data() {
 
 function process_single_node(node) {
 	if(node.category == 'io') {
-		console.log(node.text);
+		// console.log(node.text);
 		io_process(node.text);
 	}
 	else if(node.category == 'step') {
 		comma_separated_steps = node.text.split(',');
-		console.log(comma_separated_steps);
+		// console.log(comma_separated_steps);
 		for(var k=0; k<comma_separated_steps.length; ++k) {
 			step_process(comma_separated_steps[k]);	
 		}
 	}
 	else if(node.category == 'condition') {
 		var condition_result = condition_process(node.text);
-		console.log(condition_result);
+		// console.log(condition_result);
 	}
 }
 
@@ -274,6 +258,7 @@ function parse_expression(exp_str) {
 	// ((x+y)*(a-b))/2
 	// p
 	// 5
+	console.log(exp_str);
 
 	var exp = exp_str; // taking backup
 	exp = replace_all(exp, "(", " ");
@@ -289,15 +274,15 @@ function parse_expression(exp_str) {
 	if(vars.length == 1) return process_var_const(exp); //single variable or constant
 	else { // multiple variables and/or constants found
 
-		// console.log(exp_str);
 		for(var i=0; i<vars.length; ++i) {
 			var val_temp = process_var_const(vars[i]);
 			if(val_temp === false) return false; // value not found
 			// value found, replace this variable (if) name with this value in the expression
 			if(val_temp == vars[i]) continue; // constant, no need to replace
 			exp_str = replace_all(exp_str, vars[i], val_temp);
-			console.log(exp_str);
+			// console.log(exp_str);
 		}
+		console.log(exp_str);
 		var final_value = eval(exp_str);
 		return final_value;
 	}

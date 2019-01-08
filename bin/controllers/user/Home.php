@@ -160,16 +160,76 @@ class Home extends User_Controller {
 		else echo "Invalid Graph ID";
 	}
 
-	function analyze_graph($graph_id=NULL) {
+	function analyze_graph($graph_id=NULL, $ret=false) {
 		if(!$graph_id) exit("No ID Found");
 		else {
 			$json = $this->m_home->fetch_graph_json($graph_id);
 			if($json) {
 				$graph = json_decode($json->graph_json);
+				if($ret) return $graph;
 				$this->printer($graph);
 			}
 			else echo "Invalid Graph ID";
 
 		}
+	}
+
+	function purify_graph($graph_data=NULL) {
+		if(!$graph_data) exit("No Data Found");
+		$graph = json_decode($graph_data);
+
+    	unset($graph->class);
+    	unset($graph->linkFromPortIdProperty);
+    	unset($graph->linkToPortIdProperty);
+
+    	$matrix = array();
+
+    	foreach ($graph->linkDataArray as $key => $link) {
+    		unset($link->fromPort);
+    		unset($link->toPort);
+    		unset($link->points);
+    		unset($link->visible);
+
+    		// echo $link->from.' -> '.$link->to .'<br>';
+
+    		if(!isset($matrix[$link->from])) $matrix[$link->from] = array();
+    		array_push($matrix[$link->from], $link->to);
+    	}
+    	
+    	$graph->matrix = $matrix;
+		return $graph;
+	}
+
+	function simulate() {
+		$data = $this->data;
+		$data['page'] = $this->router->fetch_method();
+		$data['page_title'] = ucfirst($this->router->fetch_method());
+
+
+		$data['graph_data'] = $_POST['graph_data'];
+		$data['graph_img'] = $_POST['graph_img'];
+
+		unset($_POST['graph_data']);
+		unset($_POST['graph_img']);
+
+
+		// $this->printer($data['graph_data']);
+		// $this->printer($data['graph_img'], true);
+
+		$graph_data = $this->purify_graph($data['graph_data']);
+		$this->printer($graph_data);
+
+		echo "<img src='".$data['graph_img']."'>";
+
+
+
+
+
+
+
+		exit();
+
+		// $this->printer($data, true);
+		$this->load->view($this->viewpath.'v_main', $data);
 	}
 }

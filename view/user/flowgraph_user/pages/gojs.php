@@ -42,11 +42,18 @@
 			</a>
 		</div>
 
-		<div style="display: block;">
+		<div style="display: none;">
 			<!-- <button id="SaveButton">Save</button> -->
 			<button id="LoadButton">Load</button>
 
 			<textarea id="mySavedModel"><?php echo $graph_json; ?></textarea>
+		</div>
+
+		<div style="display: none">
+			<form id="simulate_form" action="<?php echo $controller.'/simulate' ?>" method="post">
+				<textarea name="graph_data"></textarea>
+				<textarea name="graph_img"></textarea>
+			</form>
 		</div>
 	</div>
 	<div class="clearfix"></div>
