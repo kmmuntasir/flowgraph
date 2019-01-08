@@ -174,15 +174,17 @@ class Home extends User_Controller {
 		}
 	}
 
-	function purify_graph($graph_data=NULL) {
-		if(!$graph_data) exit("No Data Found");
-		$graph = json_decode($graph_data);
+	function purify_graph($graph=NULL) {
+		if(!$graph) exit("No Data Found");
+		$graph = json_decode($graph);
 
     	unset($graph->class);
     	unset($graph->linkFromPortIdProperty);
     	unset($graph->linkToPortIdProperty);
 
+
     	$matrix = array();
+    	$nodes = array();
 
     	foreach ($graph->linkDataArray as $key => $link) {
     		unset($link->fromPort);
@@ -195,9 +197,75 @@ class Home extends User_Controller {
     		if(!isset($matrix[$link->from])) $matrix[$link->from] = array();
     		array_push($matrix[$link->from], $link->to);
     	}
+
+
+    	foreach ($graph->nodeDataArray as $key => $node) {
+    		$idx = $node->key;
+    		$nodes[$idx] = $node;
+    		unset($nodes[$idx]->key);
+    		$nodes[$idx]->edges = (isset($matrix[$idx])) ? $matrix[$idx] : NULL;
+
+    	}
+
+    	foreach ($graph->linkDataArray as $key => $link) {
+    		$idx = $link->from;
+    		if($nodes[$idx]->category == 'condition') {
+    			if(count($nodes[$idx]->edges) != 2) return $this->err("condition_target_number_error", $idx);
+
+    			if(!isset($link->text)) $nodes[$idx]->true = $link->to;
+    			else {
+    				$link->text = strtolower($link->text);
+    				if($link->text == 'yes') $nodes[$idx]->true = $link->to;
+    				else if($link->text == 'no') $nodes[$idx]->false = $link->to;
+    				else return $this->err("condition_edge_text_error", $idx);
+    			}
+
+    		}
+    		else {
+    			if(count($nodes[$idx]->edges) > 1) return $this->err("node_target_number_error", $idx);
+    			else $nodes[$idx]->next = $link->to;
+    		}
+    	}
+
+    	$min_x = 1000000;
+    	$min_y = 1000000;
+    	$max_x = -1000000;
+    	$max_y = -1000000;
+    	foreach ($nodes as $key => $node) {
+    		$axes = explode(" ", $node->loc);
+    		$node->x = $axes[1] * 1;
+    		$node->y = $axes[0] * 1;
+
+    		if($min_x > $node->x) $min_x = $node->x;
+    		if($min_y > $node->y) $min_y = $node->y;
+    		if($max_x < $node->x) $max_x = $node->x;
+    		if($max_y < $node->y) $max_y = $node->y;
+
+    		unset($node->loc);
+    		unset($node->edges);
+    		if($node->category == 'condition' && (!isset($node->true) || !isset($node->false)))
+    			return $this->err("condition_target_type_error", $idx);
+    	}
+
+
+    	foreach ($nodes as $key => $node) {
+    		$node->x -= $min_x;
+    		$node->y -= $min_y;
+    	}
+
+    	// echo $min_x.' '.$min_y.'<br>';
+    	// echo $max_x.' '.$max_y.'<br>';
     	
-    	$graph->matrix = $matrix;
-		return $graph;
+    	// $graph->matrix = $matrix;
+    	// $graph->nodes = $nodes;
+		return $nodes;
+	}
+
+	function err($type, $node) {
+		$message = new stdClass();
+		$message->type = $type;
+		$message->node = $node;
+		return $message;
 	}
 
 	function simulate() {
@@ -207,27 +275,15 @@ class Home extends User_Controller {
 
 
 		$data['graph_data'] = $_POST['graph_data'];
+		$data['graph_data'] = $this->purify_graph($data['graph_data']);
+
 		$data['graph_img'] = $_POST['graph_img'];
+
 
 		unset($_POST['graph_data']);
 		unset($_POST['graph_img']);
 
-
-		// $this->printer($data['graph_data']);
-		// $this->printer($data['graph_img'], true);
-
-		$graph_data = $this->purify_graph($data['graph_data']);
-		$this->printer($graph_data);
-
-		echo "<img src='".$data['graph_img']."'>";
-
-
-
-
-
-
-
-		exit();
+		// $this->printer($data['graph_data'], true);
 
 		// $this->printer($data, true);
 		$this->load->view($this->viewpath.'v_main', $data);
