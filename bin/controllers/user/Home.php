@@ -211,12 +211,7 @@ class Home extends User_Controller {
     		$idx = $link->from;
     		if($nodes[$idx]->category == 'condition') {
     			if(count($nodes[$idx]->edges) != 2) {
-    				// echo $idx.'<br>';
-    				$error_array_temp = $this->err("condition_target_number_error", $idx);
-    				// $this->printer($error_array_temp);
-    				// $src_res_temp = array_search($error_array_temp, $errors, true);
-    				// if($src_res_temp == false)
-    					array_push($errors, $error_array_temp);
+    				$errors = $this->err($errors, "condition_target_number_error", $idx);
     			}
     			else {
 	    			if(!isset($link->text)) $nodes[$idx]->true = $link->to;
@@ -224,13 +219,13 @@ class Home extends User_Controller {
 	    				$link->text = strtolower($link->text);
 	    				if($link->text == 'yes') $nodes[$idx]->true = $link->to;
 	    				else if($link->text == 'no') $nodes[$idx]->false = $link->to;
-	    				else array_push($errors, $this->err("condition_edge_text_error", $idx));
+	    				else $errors = $this->err($errors, "condition_link_text_error", $idx);
 	    			}
 	    		}
 
     		}
     		else {
-    			if(count($nodes[$idx]->edges) > 1) array_push($errors, $this->err("node_target_number_error", $idx));
+    			if(count($nodes[$idx]->edges) > 1) $errors = $this->err($errors, "node_target_number_error", $idx);
     			else $nodes[$idx]->next = $link->to;
     		}
     	}
@@ -255,7 +250,7 @@ class Home extends User_Controller {
     		unset($node->loc);
     		unset($node->edges);
     		if($node->category == 'condition' && (!isset($node->true) || !isset($node->false)))
-    			array_push($errors, $this->err("condition_target_type_error", $idx));
+    			$errors = $this->err($errors, "condition_target_type_error", $key);
     	}
 
 
@@ -266,7 +261,8 @@ class Home extends User_Controller {
 
     		if($node->category == 'start') {
     			if($start_count == 0) $nodes['start'] = $key;
-    			else array_push($errors, $this->err("multiple_start_count_problem", $idx));
+    			else $errors = $this->err($errors, "multiple_start_count_problem", $key);
+    			$start_count++;
     		}
     	}
 
@@ -275,13 +271,16 @@ class Home extends User_Controller {
     	
     	// $graph->matrix = $matrix;
     	// $graph->nodes = $nodes;
-    	$this->printer($errors, true);
+
+    	// $this->printer($errors, true);
+
 		return array('errors' => $errors, 'nodes' => $nodes);
 	}
 
 	function err($errors, $error_type, $node) {
 		if(!isset($errors[$node])) $errors[$node] = array();
-		array_push($errors[$node], $error_type);
+		if(!isset($errors[$node][$error_type])) $errors[$node][$error_type] = 0;
+		$errors[$node][$error_type]++;
 		return $errors;
 	}
 
@@ -290,27 +289,26 @@ class Home extends User_Controller {
 		$data['page'] = $this->router->fetch_method();
 		$data['page_title'] = ucfirst($this->router->fetch_method());
 
-
-		$data['graph_data'] = $_POST['graph_data'];
-		$data['graph_data'] = $this->purify_graph($data['graph_data']);
-		// if(is_array($data['graph_data'])) {
-		// 	$data['graph_start'] = $data['graph_data']['start'];
-		// 	unset($data['graph_data']['start']);
-		// }
-		// else {
-		// 	$data['error'] = $data['graph_data'];
-		// 	$data['graph_data'] = '';
-		// }
+		$data['pure_graph'] = $this->purify_graph($_POST['graph_data']);
+		$data['error_data'] = $data['pure_graph']['errors'];
+		$data['graph_data'] = $data['pure_graph']['nodes'];
+		
+		if(isset($data['graph_data']['start'])) {
+			$data['graph_start'] = $data['graph_data']['start'];
+			unset($data['graph_data']['start']);
+		}
+		else $data['graph_start'] = 'error';
 
 		$data['graph_img'] = $_POST['graph_img'];
 
 
 		unset($_POST['graph_data']);
 		unset($_POST['graph_img']);
+		unset($data['pure_graph']);
 
 		// $this->printer($data['graph_data'], true);
 
-		$this->printer($data, true);
+		// $this->printer($data, true);
 		$this->load->view($this->viewpath.'v_main', $data);
 	}
 }

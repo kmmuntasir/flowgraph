@@ -1,12 +1,10 @@
 <div style="display: none;">
 	<textarea class="form-control" id="graph_data"><?php echo json_encode($graph_data); ?></textarea>
 	
-	<?php if(isset($error)) { ?>
-		<textarea id="error_data"><?php echo json_encode($error); ?></textarea>
-	<?php } else {?>
+		<textarea id="error_data"><?php echo json_encode($error_data); ?></textarea>
+
 		<input type="hidden" id="start_node" value='<?php echo $graph_start; ?>'>
-	<?php } ?>
-	<!-- <textarea class="form-control" id="graph_img"></textarea> -->
+
 </div>
 
 <div class="row">
@@ -17,6 +15,7 @@
 		<img id="graph_img_background" src="<?php echo $graph_img ?>" alt="Graph Image">
 </div>
 <div class="clearfix"></div>
+<button id="reset_button" class="btn btn-dark">Reset</button>
 <button id="step_button" class="btn btn-primary">Next Step</button>
 </div> <!-- Row end -->
 
@@ -35,7 +34,7 @@
 	}
 
 	#pointer {
-		transition: all 300ms ease;
+		transition: all 1000ms ease;
 	}
 
 

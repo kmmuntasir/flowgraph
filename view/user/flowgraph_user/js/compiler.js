@@ -97,6 +97,7 @@ function initiate_sample_data() {
 
 	// return;
 
+
 	nodes.push({'category':'step', 'text':'p:=q:=r:=((x+y)*(a-b))/2'});
 	nodes.push({'category':'step','text':'Sum:=0'});
 	nodes.push({'category':'step','text':'sum := 3, N := 2'});
@@ -116,6 +117,8 @@ function initiate_sample_data() {
 	nodes.push({'category':'io','text':'   Input     N '});
 	nodes.push({'category':'io','text':'show p'});
 	nodes.push({'category':'io','text':'read x, y'});
+	nodes.push({'category':'condition','text':'x&lt;=y'});
+
 
 }
 
@@ -144,8 +147,6 @@ function process_single_node(category, text) {
 function io_process(text) {
 	text = sanitize(text);
 
-	alert(text);
-
 	iotemp = divide(text, ' ');
 	// var splitIdx = text.indexOf(' ');
 	// var iotemp = [];
@@ -170,7 +171,6 @@ function io_process(text) {
 }
 
 function io_process_output(str) {
-	alert(str);
 	var fc = str.substr(0, 1);
 	var lc = str.substr(str.length - 1, 1);
 	var mp = str.substr(1, (str.length-2));
@@ -178,10 +178,11 @@ function io_process_output(str) {
 	if(fc == '"' && lc == '"' && mp.indexOf('"') == -1) { // first and last characters are double quotes, and there are no other double quote in it.
 		// Valid quoted string
 		// output this string (str);
-		// alert(mp);
+		alert(mp);
 	}
 	else { // Possible Variable
 		if(validate_identifier(str)){
+			alert(v[str]);
 			// Valid variable
 			// Output the value of the variable if it exists, if not then throw exception
 		}
@@ -205,7 +206,7 @@ function io_process_input(str) {
 				new_var(potential_vars[i]);
 			}
 			// v[potential_vars[i]] = 55;
-			v[potential_vars[i]] = prompt("Please enter the mark");
+			v[potential_vars[i]] = prompt("Please enter the value for "+potential_vars[i]);
 		}
 		else {
 			// Invalid variable
@@ -360,8 +361,18 @@ function parse_condition(exp_str) {
 			// console.log(exp_str);
 		}
 
+
+		exp_str = replace_all(exp_str, "!=", "##not_equal");
+		exp_str = replace_all(exp_str, "<=", "##lt_equal");
+		exp_str = replace_all(exp_str, ">=", "##gt_equal");
+
 		exp_str = replace_all(exp_str, "=", "$");
 		exp_str = replace_all(exp_str, "$", "==");
+
+
+		exp_str = replace_all(exp_str, "##not_equal", "!=");
+		exp_str = replace_all(exp_str, "##lt_equal", "<=");
+		exp_str = replace_all(exp_str, "##gt_equal", ">=");
 
 		console.log(exp_str);
 
