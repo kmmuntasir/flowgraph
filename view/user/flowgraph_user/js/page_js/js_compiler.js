@@ -25,7 +25,7 @@ $(document).ready(function() {
 	// Calling process fn for every item in nodes array
 	for(var i=0; i<nodes.length; i++) {
 		curr_node = i;
-		process_single_node(nodes[i]);
+		process_single_node(nodes[i].category, nodes[i].text);
 
 		output(nodes[i].category + ': ' + nodes[i].text);
 		display_vars();

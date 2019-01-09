@@ -182,7 +182,7 @@ class Home extends User_Controller {
     	unset($graph->linkFromPortIdProperty);
     	unset($graph->linkToPortIdProperty);
 
-
+    	$errors = array();
     	$matrix = array();
     	$nodes = array();
 
@@ -210,27 +210,37 @@ class Home extends User_Controller {
     	foreach ($graph->linkDataArray as $key => $link) {
     		$idx = $link->from;
     		if($nodes[$idx]->category == 'condition') {
-    			if(count($nodes[$idx]->edges) != 2) return $this->err("condition_target_number_error", $idx);
-
-    			if(!isset($link->text)) $nodes[$idx]->true = $link->to;
-    			else {
-    				$link->text = strtolower($link->text);
-    				if($link->text == 'yes') $nodes[$idx]->true = $link->to;
-    				else if($link->text == 'no') $nodes[$idx]->false = $link->to;
-    				else return $this->err("condition_edge_text_error", $idx);
+    			if(count($nodes[$idx]->edges) != 2) {
+    				// echo $idx.'<br>';
+    				$error_array_temp = $this->err("condition_target_number_error", $idx);
+    				// $this->printer($error_array_temp);
+    				// $src_res_temp = array_search($error_array_temp, $errors, true);
+    				// if($src_res_temp == false)
+    					array_push($errors, $error_array_temp);
     			}
+    			else {
+	    			if(!isset($link->text)) $nodes[$idx]->true = $link->to;
+	    			else {
+	    				$link->text = strtolower($link->text);
+	    				if($link->text == 'yes') $nodes[$idx]->true = $link->to;
+	    				else if($link->text == 'no') $nodes[$idx]->false = $link->to;
+	    				else array_push($errors, $this->err("condition_edge_text_error", $idx));
+	    			}
+	    		}
 
     		}
     		else {
-    			if(count($nodes[$idx]->edges) > 1) return $this->err("node_target_number_error", $idx);
+    			if(count($nodes[$idx]->edges) > 1) array_push($errors, $this->err("node_target_number_error", $idx));
     			else $nodes[$idx]->next = $link->to;
     		}
     	}
 
     	$min_x = 1000000;
     	$min_y = 1000000;
-    	$max_x = -1000000;
-    	$max_y = -1000000;
+
+    	$start_count = 0;
+    	// $max_x = -1000000;
+    	// $max_y = -1000000;
     	foreach ($nodes as $key => $node) {
     		$axes = explode(" ", $node->loc);
     		$node->x = $axes[1] * 1;
@@ -238,19 +248,26 @@ class Home extends User_Controller {
 
     		if($min_x > $node->x) $min_x = $node->x;
     		if($min_y > $node->y) $min_y = $node->y;
-    		if($max_x < $node->x) $max_x = $node->x;
-    		if($max_y < $node->y) $max_y = $node->y;
+    		// if($max_x < $node->x) $max_x = $node->x;
+    		// if($max_y < $node->y) $max_y = $node->y;
+
 
     		unset($node->loc);
     		unset($node->edges);
     		if($node->category == 'condition' && (!isset($node->true) || !isset($node->false)))
-    			return $this->err("condition_target_type_error", $idx);
+    			array_push($errors, $this->err("condition_target_type_error", $idx));
     	}
 
 
     	foreach ($nodes as $key => $node) {
     		$node->x -= $min_x;
     		$node->y -= $min_y;
+
+
+    		if($node->category == 'start') {
+    			if($start_count == 0) $nodes['start'] = $key;
+    			else array_push($errors, $this->err("multiple_start_count_problem", $idx));
+    		}
     	}
 
     	// echo $min_x.' '.$min_y.'<br>';
@@ -258,14 +275,14 @@ class Home extends User_Controller {
     	
     	// $graph->matrix = $matrix;
     	// $graph->nodes = $nodes;
-		return $nodes;
+    	$this->printer($errors, true);
+		return array('errors' => $errors, 'nodes' => $nodes);
 	}
 
-	function err($type, $node) {
-		$message = new stdClass();
-		$message->type = $type;
-		$message->node = $node;
-		return $message;
+	function err($errors, $error_type, $node) {
+		if(!isset($errors[$node])) $errors[$node] = array();
+		array_push($errors[$node], $error_type);
+		return $errors;
 	}
 
 	function simulate() {
@@ -276,6 +293,14 @@ class Home extends User_Controller {
 
 		$data['graph_data'] = $_POST['graph_data'];
 		$data['graph_data'] = $this->purify_graph($data['graph_data']);
+		// if(is_array($data['graph_data'])) {
+		// 	$data['graph_start'] = $data['graph_data']['start'];
+		// 	unset($data['graph_data']['start']);
+		// }
+		// else {
+		// 	$data['error'] = $data['graph_data'];
+		// 	$data['graph_data'] = '';
+		// }
 
 		$data['graph_img'] = $_POST['graph_img'];
 
@@ -285,7 +310,7 @@ class Home extends User_Controller {
 
 		// $this->printer($data['graph_data'], true);
 
-		// $this->printer($data, true);
+		$this->printer($data, true);
 		$this->load->view($this->viewpath.'v_main', $data);
 	}
 }

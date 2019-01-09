@@ -119,20 +119,22 @@ function initiate_sample_data() {
 
 }
 
-function process_single_node(node) {
-	if(node.category == 'io') {
+function process_single_node(category, text) {
+	if(category == 'io') {
 		// console.log(node.text);
-		io_process(node.text);
+		io_process(text);
 	}
-	else if(node.category == 'step') {
-		comma_separated_steps = node.text.split(',');
+	else if(category == 'step') {
+		comma_separated_steps = text.split(',');
 		// console.log(comma_separated_steps);
 		for(var k=0; k<comma_separated_steps.length; ++k) {
 			step_process(comma_separated_steps[k]);	
 		}
 	}
-	else if(node.category == 'condition') {
-		var condition_result = condition_process(node.text);
+	else if(category == 'condition') {
+		var condition_result = condition_process(text);
+		console.log(condition_result);
+		return condition_result;
 		// console.log(condition_result);
 	}
 }
@@ -141,6 +143,8 @@ function process_single_node(node) {
 
 function io_process(text) {
 	text = sanitize(text);
+
+	alert(text);
 
 	iotemp = divide(text, ' ');
 	// var splitIdx = text.indexOf(' ');
@@ -166,6 +170,7 @@ function io_process(text) {
 }
 
 function io_process_output(str) {
+	alert(str);
 	var fc = str.substr(0, 1);
 	var lc = str.substr(str.length - 1, 1);
 	var mp = str.substr(1, (str.length-2));
@@ -173,6 +178,7 @@ function io_process_output(str) {
 	if(fc == '"' && lc == '"' && mp.indexOf('"') == -1) { // first and last characters are double quotes, and there are no other double quote in it.
 		// Valid quoted string
 		// output this string (str);
+		// alert(mp);
 	}
 	else { // Possible Variable
 		if(validate_identifier(str)){
@@ -198,7 +204,8 @@ function io_process_input(str) {
 				var_list.push(potential_vars[i]);
 				new_var(potential_vars[i]);
 			}
-			v[potential_vars[i]] = 5;
+			// v[potential_vars[i]] = 55;
+			v[potential_vars[i]] = prompt("Please enter the mark");
 		}
 		else {
 			// Invalid variable
@@ -311,7 +318,6 @@ function parse_condition(exp_str) {
 	// 5>1 && (1==1 || 5<1)
 	// (i<5) AND ((i=1) OR (i=2))
 
-	console.log(exp_str);
 
 	exp_str = replace_all(exp_str, "AND", "&&");
 	exp_str = replace_all(exp_str, "OR", "||");
@@ -319,6 +325,10 @@ function parse_condition(exp_str) {
 	exp_str = replace_all(exp_str, "and", "&&");
 	exp_str = replace_all(exp_str, "or", "||");
 	exp_str = replace_all(exp_str, "not", "!");
+	exp_str = replace_all(exp_str, "&lt;", "<");
+	exp_str = replace_all(exp_str, "&gt;", ">");
+
+	console.log(exp_str);
 
 	var exp = exp_str; // taking backup
 	exp = replace_all(exp, "(", " ");

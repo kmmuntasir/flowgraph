@@ -41,7 +41,9 @@
 <script src="<?php echo $fullpath; ?>js/gojs_script.js"></script>
 <?php } ?>
 
-<script src="<?php echo $fullpath; ?>js/compiler.js"></script>
+<?php if($page == 'simulate' || $page == 'js_compiler') { ?>
+	<script src="<?php echo $fullpath; ?>js/compiler.js"></script>
+<?php } ?>
 
 <!-- Page Depended JS -->
 <script src="<?php echo $fullpath.'js/page_js/'.$page.'.js'; ?>"></script>	

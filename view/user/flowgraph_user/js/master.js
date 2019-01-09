@@ -47,3 +47,12 @@ function notify(msg_text, msg_class='primary', t=5000, modal_size='md') {
         });
     }, t);
 }
+
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
