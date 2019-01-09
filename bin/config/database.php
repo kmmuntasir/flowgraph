@@ -77,9 +77,9 @@ $query_builder = TRUE;
 
 $db['production']['dsn'] = '';
 $db['production']['hostname'] = 'localhost';
-$db['production']['username'] = '';
-$db['production']['password'] = '';
-$db['production']['database'] = '';
+$db['production']['username'] = 'muntasir_sarahah';
+$db['production']['password'] = 'KUDZQM!GW-f$';
+$db['production']['database'] = 'muntasir_sarahah';
 $db['production']['dbdriver'] = 'mysqli';
 $db['production']['dbprefix'] = '';
 $db['production']['pconnect'] = FALSE;
