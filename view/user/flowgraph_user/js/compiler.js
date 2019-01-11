@@ -2,6 +2,7 @@ var v = [];
 var curr_node = 0;
 var nodes = [];
 var var_list = [];
+var simulate_js_present = false;
 
 window.onerror = function(e) {
 	alert("There's an error in node " + curr_node + ": " + e);
@@ -71,6 +72,7 @@ function check_var(var_name) {
 
 function new_var(var_name) {
 	// Process animations
+	if(simulate_js_present) put_var(var_name);
 }
 
 function initiate_sample_data() {
@@ -128,18 +130,24 @@ function process_single_node(category, text) {
 		io_process(text);
 	}
 	else if(category == 'step') {
+		var exp_result_string = '';
+		var delimiter = '';
 		comma_separated_steps = text.split(',');
 		// console.log(comma_separated_steps);
 		for(var k=0; k<comma_separated_steps.length; ++k) {
-			step_process(comma_separated_steps[k]);	
+			var exp_str = step_process(comma_separated_steps[k]);
+			exp_result_string = exp_result_string + delimiter + exp_str[0];
+			delimiter = ', ';
 		}
+		return exp_result_string;
 	}
 	else if(category == 'condition') {
 		var condition_result = condition_process(text);
-		console.log(condition_result);
+		// console.log(condition_result);
 		return condition_result;
 		// console.log(condition_result);
 	}
+	// console.log(v);
 }
 
 // ============================ IO Functions ========================
@@ -178,11 +186,12 @@ function io_process_output(str) {
 	if(fc == '"' && lc == '"' && mp.indexOf('"') == -1) { // first and last characters are double quotes, and there are no other double quote in it.
 		// Valid quoted string
 		// output this string (str);
-		alert(mp);
+		
+		if(simulate_js_present) put_output(mp);
 	}
 	else { // Possible Variable
 		if(validate_identifier(str)){
-			alert(v[str]);
+			if(simulate_js_present) put_output(v[str]);
 			// Valid variable
 			// Output the value of the variable if it exists, if not then throw exception
 		}
@@ -194,6 +203,7 @@ function io_process_output(str) {
 }
 
 function io_process_input(str) {
+	var is_var_new = false;
 	var potential_vars = str.split(',');
 	for(var i=0; i<potential_vars.length; ++i) {
 		potential_vars[i] = sanitize(potential_vars[i]);
@@ -203,10 +213,11 @@ function io_process_input(str) {
 			// Create the variable if doesn't exist, then Input the value of the variable
 			if(!check_var(potential_vars[i])) {
 				var_list.push(potential_vars[i]);
-				new_var(potential_vars[i]);
+				is_var_new = true;
 			}
 			// v[potential_vars[i]] = 55;
-			v[potential_vars[i]] = prompt("Please enter the value for "+potential_vars[i]);
+			v[potential_vars[i]] = prompt("Enter the value for "+potential_vars[i]);
+			if(is_var_new) new_var(potential_vars[i]);
 		}
 		else {
 			// Invalid variable
@@ -218,6 +229,7 @@ function io_process_input(str) {
 // ======================== Step Functions =====================
 
 function step_process(step_text, level=0) {
+	var is_var_new = false;
 	// console.log(step_text + ' - ' + level);
 	if(level==0) step_text = replace_all(step_text, ' ', '');
 	var step_parts = divide(step_text, ':=');
@@ -228,7 +240,7 @@ function step_process(step_text, level=0) {
 		if(level == 0) {
 			// Invalid step, no assignment operator found
 			// Throw exception
-			console.log("Invalid Step");
+			alert("Invalid Step");
 		}
 		else {
 			// Possibly expression
@@ -243,17 +255,54 @@ function step_process(step_text, level=0) {
 
 			// console.log(step_parts[0] + "=" + step_parts[1] + ' => ' + step_temp);
 
-			if(step_temp !== false) {
+			if(step_temp === false) return false;
+			if(step_temp.constructor === Array) { // Expression result found
+				// alert("array found");
+				// console.log(step_temp);
+				var exp_str = step_parts[0] + ' = ' + step_temp[0];
+				step_temp = step_temp[1];
+
+
 				if(!check_var(step_parts[0])) {
-					var_list.push(step_parts[0]);
-					new_var(step_parts[0]);
+					var_list.push(step_parts[0]); // Creating new variable
+					is_var_new = true;
 				}
-				v[step_parts[0]] = parseInt(step_temp);
-				// Process animation for showing this new/old variable
-				// console.log(step_parts[0] + ' => ' + v[step_parts[0]]);
-				return v[step_parts[0]];
+				var temp_int = parseInt(step_temp);
+				v[step_parts[0]] = parseFloat(step_temp).toFixed(3);
+				if(temp_int == v[step_parts[0]]) v[step_parts[0]] = temp_int;
+				if(is_var_new) new_var(step_parts[0]);
+				else 
+					if(simulate_js_present) update_var(step_parts[0]);
+
+				var ret_val = [exp_str, v[step_parts[0]]]
+
+				// alert(exp_str);
+
+				// return v[step_parts[0]];
+				return ret_val;
 			}
-			else return false;
+			else { // Value found
+				// alert("value found");
+				// console.log(step_temp);
+				if(!check_var(step_parts[0])) {
+					var_list.push(step_parts[0]); // Creating new variable
+					is_var_new = true;
+				}
+				var temp_int = parseInt(step_temp);
+				v[step_parts[0]] = parseFloat(step_temp).toFixed(3);
+				if(temp_int == v[step_parts[0]]) v[step_parts[0]] = temp_int;
+
+
+				var exp_str = step_parts[0] + ' = ' + v[step_parts[0]];
+
+				if(is_var_new) new_var(step_parts[0]);
+				else
+					if(simulate_js_present) update_var(step_parts[0]);
+				// return v[step_parts[0]];
+
+				var ret_val = [exp_str, v[step_parts[0]]];
+				return ret_val;
+			}
 		}
 		else {
 			return false;
@@ -266,7 +315,7 @@ function parse_expression(exp_str) {
 	// ((x+y)*(a-b))/2
 	// p
 	// 5
-	console.log(exp_str);
+	// console.log(exp_str);
 
 	var exp = exp_str; // taking backup
 	exp = replace_all(exp, "(", " ");
@@ -290,9 +339,12 @@ function parse_expression(exp_str) {
 			exp_str = replace_all(exp_str, vars[i], val_temp);
 			// console.log(exp_str);
 		}
-		console.log(exp_str);
+		// console.log(exp_str);
 		var final_value = eval(exp_str);
-		return final_value;
+		// return final_value;
+
+		var ret_val = [exp_str, final_value]
+		return ret_val;
 	}
 }
 
@@ -329,7 +381,7 @@ function parse_condition(exp_str) {
 	exp_str = replace_all(exp_str, "&lt;", "<");
 	exp_str = replace_all(exp_str, "&gt;", ">");
 
-	console.log(exp_str);
+	// console.log(exp_str);
 
 	var exp = exp_str; // taking backup
 	exp = replace_all(exp, "(", " ");
@@ -345,6 +397,7 @@ function parse_condition(exp_str) {
 	exp = replace_all(exp, "*", " ");
 	exp = replace_all(exp, "/", " ");
 	exp = replace_all(exp, "%", " ");
+	exp = replace_all(exp, "?", "");
 
 	exp = sanitize(exp);
 	var vars = exp.split(' ');
@@ -373,10 +426,12 @@ function parse_condition(exp_str) {
 		exp_str = replace_all(exp_str, "##not_equal", "!=");
 		exp_str = replace_all(exp_str, "##lt_equal", "<=");
 		exp_str = replace_all(exp_str, "##gt_equal", ">=");
+		exp_str = replace_all(exp_str, "?", "");
 
-		console.log(exp_str);
+		// console.log(exp_str);
 
 		var final_value = eval(exp_str);
-		return final_value;
+		var ret_val = [exp_str, final_value]
+		return ret_val;
 	}
 }
